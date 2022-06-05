@@ -14,6 +14,19 @@ struct ContentView: View {
 
     @State private var temp = 0
     @State private var selectedTempUnit: TemperatureUnit = .celsius
+    
+    struct ResultView: View {
+        var unit: TemperatureUnit
+        var result: Double
+        
+        var body: some View {
+            HStack {
+                Text(unit == .celsius ? "Fahrenheit Equivalent:" : "Celsius Equivalent:")
+                Text("\(result, specifier: "%.2f")")
+            }
+            .padding()
+        }
+    }
 
     var converted: Double {
         if (selectedTempUnit == .celsius) {
@@ -25,7 +38,8 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("Temperature Converter").font(.title)
+            Text("Temperature Converter")
+                .titled()
             HStack {
                 Text("Temperature:")
                 TextField("", value: $temp, formatter: NumberFormatter())
@@ -42,12 +56,22 @@ struct ContentView: View {
                 .pickerStyle(.segmented)
             }
             .padding()
-            HStack {
-                Text(selectedTempUnit == .celsius ? "Fahrenheit Equivalent:" : "Celsius Equivalent:")
-                Text("\(converted, specifier: "%.2f")")
-            }
-            .padding()
+            ResultView(unit: selectedTempUnit, result: converted)
         }
+    }
+}
+
+struct Title: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.title)
+            .foregroundColor(.red)
+    }
+}
+
+extension View {
+    func titled() -> some View {
+        modifier(Title())
     }
 }
 
